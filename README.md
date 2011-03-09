@@ -47,29 +47,29 @@ How to use
     Checkout this repo where your want your blog to be on your server :
     $ cd /var/www
     $ git clone https://github.com/maximeh/seiteki blog
-    
-    Then READ the config.php and tune the variable as you want them.
 
-    If you already have a wordpress install, take a look at _inc/frow_wp/
-    there is a script called convert_from_wordpress.php, open it and fullfill
-    the hosts/users/password variables.
-    
-    This will create a file for each article in your wordpress installation,
-    you can find in the _posts folder.
-    Note the way the file are named, it's always Y-M-D-title.md, when you write 
-    your new articles, they should have a name like that, where :
-        - Y is the current year
-        - M is the current month
-        - D is the current day
-        - title, well, its the title of your article
-        
-    You may have noticed the strange extension for you articles : ".md"
-    It's the extension for the markdown format created and defined [here](http://daringfireball.net/projects/markdown/ "Markdown Project")
+Then READ the config.php and tune the variable as you want them.
 
-    Since your posts are files, you can write them anywhere, where you want 
-    with your software of choice.
-    And NO, there will never be any TinyMCE of any kind here nor there will
-    be any admin panel.
+If you already have a wordpress install, take a look at _inc/frow_wp/
+there is a script called convert_from_wordpress.php, open it and fullfill
+the hosts/users/password variables.
+
+This will create a file for each article in your wordpress installation, 
+you can find in the _posts folder.
+Note the way the file are named, it's always Y-M-D-title.md, when you write 
+your new articles, they should have a name like that, where :
+    - Y is the current year
+    - M is the current month
+    - D is the current day
+    - title, well, its the title of your article
+
+You may have noticed the strange extension for you articles : ".md"
+It's the extension for the markdown format created and defined [here](http://daringfireball.net/projects/markdown/ "Markdown Project")
+
+Since your posts are files, you can write them anywhere, where you want 
+with your software of choice.
+And NO, there will never be any TinyMCE of any kind here nor there will
+be any admin panel.
     
 Layout
 ------
