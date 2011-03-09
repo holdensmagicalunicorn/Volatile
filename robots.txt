@@ -1,0 +1,28 @@
+User-agent: *
+Disallow: /public-img
+Disallow: /repository
+Disallow: /_inc
+Disallow: /_layouts
+Disallow: /_cache
+
+# Rover is a bad dog
+User-agent: Roverbot
+Disallow: /
+
+User-agent: Mediapartners-Google
+Allow: /
+
+User-agent: Adsbot-Google
+Allow: /
+
+User-agent: Googlebot-Image
+Allow: /
+
+User-agent: Googlebot-Mobile
+Allow: /
+
+User-agent: ia_archiver-web.archive.org
+Allow: /
+
+Sitemap: http://geekboy.fr/sitemap.xml
+
