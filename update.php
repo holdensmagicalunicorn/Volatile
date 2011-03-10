@@ -25,10 +25,23 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
 $total = microtime(true);
 
 include_once (str_replace('//','/',dirname(__FILE__).'/') .'config.php');
+@apache_setenv('no-gzip', 1);
+@ini_set('zlib.output_compression', 0);
+@ini_set('implicit_flush', 1);
+
+function flush_buffers(){
+    echo(str_repeat(' ',256));
+    // check that buffer is actually set before flushing
+    if (ob_get_length()){
+        @ob_flush();
+        @flush();
+        @ob_end_flush();
+    }
+    @ob_start();
+}
 
 function rrmdir($path){
   return is_file($path)?
@@ -37,10 +50,28 @@ function rrmdir($path){
   ;
 }
 
-if (isSet($_GET['clean']) && '1' === $_GET['clean']){
+echo "<html>\n";
+echo "<head>\n<title>Update seiteki</title>\n</head>\n";
+echo '<body ';
+echo 'style=\'
+        position:absolute; 
+        left: 50%;
+        top: 50%;
+        width: 700px; 
+        height: 400px; 
+        margin-top: -350px; /* moitie de la hauteur */ 
+        margin-left: -350px; /* moitie de la largeur */ 
+        font-family: "century gothic",tahoma,arial,helvetica,sans-serif;
+        font-size:21px;
+      \'>
+     ';
+echo '<ul>';
+
+if ( isSet($_GET['clean']) ){
     //Clean the cache before rebuilding it
     rrmdir(ROOT_DIR."/".CACHE_DIR."/");
     echo "The cache folder (".ROOT_DIR."/".CACHE_DIR."/) was deleted.<br>\n";
+    flush_buffers();
 }
 
 if ( !file_exists(ROOT_DIR."/".CACHE_DIR."/") )
@@ -49,26 +80,30 @@ if ( !file_exists(ROOT_DIR."/".CACHE_DIR."/") )
 //This file will re create your archives and generate your cache.
 include ROOT_DIR."/".INC_DIR."/make_archive.php";
 $t1 = microtime(true);
+echo '<li>Archive creation : ';flush_buffers();
 write_archive();
-echo 'Time write archive: ' , (microtime(true) - $t1) , "<br>", "\n";
-echo 'The archive has been created'."<br>\n";
+echo '<!-- Time write archive: ' , (microtime(true) - $t1) , " -->\n";
+echo '<font color="green">DONE</font></li>'."<br />\n";flush_buffers();
 
 include ROOT_DIR.'/'.INC_DIR."/make_cache.php";
 $t1 = microtime(true);
 set_time_limit(0);
+echo '<li>Cache creation/update :';flush_buffers();
 write_cache();
 set_time_limit(30);
-echo 'Time make cache: ' , (microtime(true) - $t1) , "<br>", "\n";
-echo 'The cache has been created'."<br>\n";
+echo '<!-- Time make cache: ' , (microtime(true) - $t1) , " -->\n";
+echo '<font color="green">DONE</font></li>'."<br />\n";flush_buffers();
 
 include ROOT_DIR.'/'.INC_DIR."/make_feed.php";
 $t1 = microtime(true);
+echo '<li>Feed creation/update : ';flush_buffers();
 write_feed();
-echo 'Time make feed: ' , (microtime(true) - $t1) , "<br>", "\n";
-echo 'The RSS file has been created'."<br>\n";
+echo '<!-- Time make feed: ' , (microtime(true) - $t1) , " -->\n";
+echo '<font color="green">DONE</font></li>'."<br />\n";flush_buffers();
 
-echo 'The blog is updated, you may close this.'."<br>\n";
+echo 'The blog is updated, you may <a href="'.URL.'">go back</a>.'."<br>\n";
 
-echo 'Total: ' , (microtime(true) - $total) , "<br>\n";
+echo '<!-- Total: ' , (microtime(true) - $total) , " -->\n";
 
+echo "<ul></body></html>\n";
 ?>
