@@ -34,13 +34,13 @@ if ( !file_exists($htaccess) )
     create_htaccess($htaccess);
 
 $path = ROOT_DIR.'/'.CACHE_DIR.'/';
-if (isSet($_GET['year']))
+if (isSet($_GET['year']) && ( $_GET['year'] !== "" ))
     $path .= $_GET['year']."/";
 
-if (isSet($_GET['month']))
+if (isSet($_GET['month']) && ( $_GET['month'] !== "" ))
     $path .= $_GET['month']."/";
 
-if (isSet($_GET['day']))
+if (isSet($_GET['day']) && ( $_GET['day'] !== "" ))
     $path .= $_GET['day']."/";
 
 $index = 'index';
@@ -49,10 +49,22 @@ if (isSet($_GET['title']) && ($_GET['title'] !== "index.php"))
 $index = str_replace('/', '', $index);
 
 $page_number = 0;
-if (isSet($_GET['page']))
+if (isSet($_GET['page']) && ( $_GET['page'] !== "" ) )
     $page_number = $_GET['page']-1;
 
 $path = str_replace('//','/',$path.'/');
-readfile($path.$index.'_'.$page_number.'.html');
+$path = $path.$index.'_'.$page_number.'.html';
+
+if ( file_exists($path) ){
+    readfile($path);
+}else{
+    header("HTTP/1.0 404 Not Found");
+    if ( defined(ERROR_PAGE) && file_exists(ROOT_DIR.ERROR_PAGE) ){
+        readfile(ROOT_DIR.ERROR_PAGE);
+    }else{
+        echo "<h1>404 Not Found</h1>";
+        echo "The page that you have requested could not be found.";
+    }
+}
 
 ?>
