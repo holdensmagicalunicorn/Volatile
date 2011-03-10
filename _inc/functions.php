@@ -170,17 +170,17 @@ function post_to_html($post, $with_title=True, $with_more=True){
 
 function create_htaccess($htaccess){
     $htaccess_fd = fopen($htaccess, 'w') or die("can't open file");
-    $content = "<IfModule mod_rewrite.c>\n";
+
+    $content = '<FilesMatch "\.(php?)$">'."\n";
+    $content .= "php_flag zlib.output_compression off\n";
+    $content .= "</FilesMatch>\n";
+
+    $content .= "<IfModule mod_rewrite.c>\n";
     $content .= "RewriteEngine On\n";
 
-    $content .= "RewriteRule ^(.*).php(/?$) $1.php [L,QSA]\n";  
     $content .= "RewriteRule ^([0-9]{4})/([0-9]{2})/([0-9]{2})/(\w*\b)(/?$) index.php?title=$4 [L,QSA]\n";
-    $content .= "RewriteRule ^([0-9]{4})/([0-9]{2})/([0-9]{2})(/?$) index.php?year=$1&month=$2&day=$3 [L,QSA]\n";
-    $content .= "RewriteRule ^([0-9]{4})/([0-9]{2})/([0-9]{2})/page/([0-9]+)(/?$) index.php?year=$1&month=$2&day=$3&page=$4 [L,QSA]\n";
-    $content .= "RewriteRule ^([0-9]{4})/([0-9]{2})(/?$) index.php?year=$1&month=$2 [L,QSA]\n";
-    $content .= "RewriteRule ^([0-9]{4})/([0-9]{2})/page/([0-9]+)(/?$) index.php?year=$1&month=$2&page=$3 [L,QSA]\n";
-    $content .= "RewriteRule ^([0-9]{4})(/?$) index.php?year=$1 [L,QSA]\n";
-    $content .= "RewriteRule ^([0-9]{4})/page/([0-9]+)(/?$) index.php?year=$1&page=$2 [L,QSA]\n";
+    $content .= "RewriteRule ^([0-9]{4})(/([0-9]{2})(/([0-9]{2}))?)?(/page/([0-9]+))?/?\s*$ index.php?year=$1&month=$3&day=$5&page=$7 [L,QSA]\n";
+
     $content .= "RewriteRule ^(archives\b)(/?$) _cache/archive.html [L,QSA]\n";
     $content .= "RewriteRule ^(feed\b)(/?$) /_atom.xml [L,QSA]\n";
 
@@ -190,12 +190,32 @@ function create_htaccess($htaccess){
         $content .= $custom_rules[$i]."\n";
 
     $content .= "RewriteRule ^page/([0-9]+)(/?$) index.php?page=$1 [L,QSA]\n";
+
+    $content .= "RewriteCond %{REQUEST_FILENAME} !-d\n";
+    $content .= "RewriteCond %{REQUEST_FILENAME} !-f\n";
     $content .= "RewriteRule ^([^_].*)(/?$) index.php?title=$1 [L,QSA]\n";
+
     $content .= "</IfModule>\n";
+
+    if ( defined(USER) && defined(PASSWORD) ){
+        $content .= "AuthUserFile ".ROOT_DIR."/.htpasswd\n";
+        $content .= "AuthType Basic\n";
+        $content .= "AuthName 'seiteki'\n";
+        $content .= "<Files 'update.php'>\n";
+        $content .= "Require valid-user\n";
+        $content .= "</Files>\n";
+
+        //Write .htpassword file
+        $htpwd_fd = fopen(ROOT_DIR."/.htpasswd", 'w') or die("can't open file");
+        fwrite($htpwd_fd, USER.":".PASSWORD."\n");
+        fclose($htpwd_fd);
+        chmod(ROOT_DIR."/.htpasswd", 0755);
+    }
 
     fwrite ($htaccess_fd, $content);
     fclose($htaccess_fd);
     chmod($htaccess, 0755);
+
 }
 
 function create_paginator($currentpage, $nb_items, $path){
@@ -220,7 +240,6 @@ function create_paginator($currentpage, $nb_items, $path){
 function add_disqus(&$content, $title){
 
     $title = str_replace('+','_',urlencode($title));
-
     $content .= '<div id="disqus_thread"></div>'."\n";
     $content .= '<script type="text/javascript">'."\n";
     $content .= "var disqus_shortname = '".DISQUS_SHORTNAME."';\n";
