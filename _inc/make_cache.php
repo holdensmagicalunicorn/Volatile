@@ -50,7 +50,7 @@ function write_cache(){
                      $header, $sidebar, $footer);
     }
     unset($flat_year);
-    
+
     // Create cache for each year/month (the key of the array is yearmonth so we can split it.)
     $flat_month = create_data_info("month");
     $month_per_year = array_keys($flat_month);
@@ -107,7 +107,7 @@ function write_cache(){
 
 function create_pages($data_post, $nb_post, $path, $header, $sidebar, $footer){
     $data_post = array_reverse($data_post, true);
-    
+
     //Create the HTML file for the day.
     $nb_page = (int)ceil($nb_post/POST_PER_PAGE);
     for ($i=0; $i<$nb_page; $i++){
@@ -150,11 +150,10 @@ function create_page_content($filepath, $post_file,
         if ( file_exists($filepath) && ($post_file[4] < filemtime($filepath))  )
                 return NULL;
         $content .= post_to_html($post_file, True, False);
-        if ( $is_page && DISQUS_ENABLED )
+        if ( $is_page && defined('DISQUS_SHORTNAME') && ( DISQUS_SHORTNAME !== '' ) )
             add_disqus(&$content, $post_file[0]);
     }
     unset($post_file);
-
 
     $content .= "$sidebar\n\n";
     $content .= "$footer\n\n";
