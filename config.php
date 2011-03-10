@@ -38,9 +38,9 @@ define('URL', "http://myblog.com");
     //Extra
     define('HTML_INLINE', false); // Do you want your HTML inline or not ? It may speed loading time a bit.
     define('WITH_PAGINATOR', false); // This will generate a paginator a-la digg for you.
+    define('ERROR_PAGE', "/path/to/error/404.html"); // Custom 404 error page
 
     //DISQUS
-    define('DISQUS_ENABLE', false);
     define('DISQUS_SHORTNAME', ''); // The DISQUS shortname as you can find it on your admin panel.
 
     // Date (Look there : http://php.net/manual/en/timezones.php to find your timezone)
@@ -49,14 +49,20 @@ define('URL', "http://myblog.com");
     //RewriteRule - Here you can enter your custom rewrite rules.
     define("REWRITERULES", serialize(
         array(
-            "ErrorDocument 404 http://url.to/path/to/my/error/404.html",
+            "RewriteRule ^(about\b)(/?$) _layouts/about.php [L,QSA]",
         )
     ) );
 
+    // User & Password (to protect the update.php from evil Internet)
+    define('USER', "username");
+    // Don't put your pass in clear, put the output of :
+    // htpasswd -nb user password
+    define('PASSWORD', "password_encoded"); 
+
 // Author and Title (for the RSS feed)
-define('FEED_TITLE', 'your_title');
-define('AUTHOR_NAME', 'your_name');
-define('AUTHOR_MAIL', 'your_mail');
+define('FEED_TITLE', 'myblog');
+define('AUTHOR_NAME', 'me');
+define('AUTHOR_MAIL', 'me@myblog.com');
 
 // Path vars - DO NOT TOUCH UNLESS YOU KNOW WHAT YOU ARE DOING.
 define('ROOT_DIR', str_replace('//','/',dirname(__FILE__)));
