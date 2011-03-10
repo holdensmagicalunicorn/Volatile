@@ -98,13 +98,12 @@ your blog is automatically updated.
     $ chmod 755 .git/hooks/post-commit
 
 If the comments are something important for you, I really recommend you to use disqus, it 
-will add a little overhead to your HTML but not that much. A built-in support for disqus will
-be implemented soon.
+will add a little overhead to your HTML but not that much. 
+A built-in support for disqus is implemented.
 Note : You can import wordpress comment into disqus, look in their pages.
 
 TODO
 ----
 Here is a list of what I thought could be feature "nice to have" :
     - really maybe : create the sitemap.xml to help google (http://www.smart-it-consulting.com/article.htm?node=133&page=37)
-    - add a DISQUS support built-in, check wordpress import
     
