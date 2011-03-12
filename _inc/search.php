@@ -41,7 +41,7 @@ function search_posts($query){
             continue;
         $emp = array();
         $info = extract_info($output[$s], $emp);
-        $result_array[] = array("url" => URL."/".urlencode($info[4]), "title" => $info[5]);
+        $result_array[] = array("url" => URL."/".urlencode($info[0]), "title" => $info[3]);
     }
 
     return $result_array;
