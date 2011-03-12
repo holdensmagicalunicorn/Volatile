@@ -37,63 +37,39 @@ function create_data_info($flat=NULL){
             for ($i = 0; $i < $size; $i++) {
                 $info = extract_info($files[$i], $existing_file);
                 //Create the data array with all the data ordered by year/month/day
-                $data[$info[0]][] = array(0 => $info[4], 
-                                        1 => $info[3], 
-                                        2 => $files[$i], 
-                                        3 => $info[5], 
-                                        4 => $info[6]
-                                        );  
+                $data[$info[5]][] = $info;
                 unset($info);
             }
         }elseif ( "month" === $flat ){
             for ($i = 0; $i < $size; $i++) {
                 $info = extract_info($files[$i], $existing_file);
-                $key = $info[0].$info[1];
+                $key = $info[5].$info[6];
                 //Create the data array with all the data ordered by year/month/day
-                $data[$key][] = array(0 => $info[4], 
-                                    1 => $info[3], 
-                                    2 => $files[$i], 
-                                    3 => $info[5], 
-                                    4 => $info[6]
-                                    );  
+                $data[$key][] = $info;
                 unset($info);
             }
         }elseif ( "day" === $flat ){
             for ($i = 0; $i < $size; $i++) {
                 $info = extract_info($files[$i], $existing_file);
-                $key = $info[0].$info[1].$info[2];
+                $key = $info[5].$info[6].$info[7];
                 //Create the data array with all the data ordered by year/month/day
-                $data[$key][] = array(0 => $info[4], 
-                                    1 => $info[3], 
-                                    2 => $files[$i], 
-                                    3 => $info[5], 
-                                    4 => $info[6]
-                                    );  
+                $data[$key][] = $info;
                 unset($info);
             }
         }elseif ( "post" === $flat ){
             for ($i = 0; $i < $size; $i++) {
                 $info = extract_info($files[$i], $existing_file);
                 //Create the data array with all the data ordered by year/month/day
-                $data[] = array(0 => $info[4], 
-                                1 => $info[3], 
-                                2 => $files[$i], 
-                                3 => $info[5], 
-                                4 => $info[6]
-                                );
+                $data[] = extract_info($files[$i], $existing_file);
                 unset($info);
             }
         }
     }else{
-        for ($i = 0; $i < $size; $i++) {
+        for ($i = $size; $i > 0; $i--) {
+            if (empty($files[$i])) continue;
             $info = extract_info($files[$i], $existing_file);
             //Create the data array with all the data ordered by year/month/day
-            $data[$info[0]][$info[1]][$info[2]][] = array(  0 => $info[4], 
-                                                            1 => $info[3], 
-                                                            2 => $files[$i], 
-                                                            3 => $info[5], 
-                                                            4 => $info[6]
-                                                        );
+            $data[$info[5]][$info[6]][$info[7]][] = $info;
             unset($info);
         }
     }
@@ -104,27 +80,33 @@ function create_data_info($flat=NULL){
 }
 
 function extract_info($file, &$existing){
+    $full_path_file = $file;
     $file = basename($file);
-    $info_posts = explode("-", $file, 4);
-    $info = array_merge(array(), $info_posts);
+    $info_file = explode("-", $file, 4);
 
-    $filetitle = explode(".", $info[3]);
-    $info[4] = $filetitle[0];
-    if (!isSet($existing[$info[4]]))
-        $existing[$info[4]] = -1;
-    $existing[$info[4]] += 1;
-    if ($existing[$info[4]] > 0)
+    $filetitle = explode(".", $info_file[3]);
+    $info[0] = $filetitle[0];
+
+    if (!isSet($existing[$info[0]]))
+        $existing[$info[0]] = -1;
+    $existing[$info[0]] += 1;
+    if ($existing[$info[0]] > 0)
         //We have already found a post with this title
         //the creation of the cache is based on info[4] data for the filename
         //so we need to tune it
-        $info[4] = $info[4]."-".$existing[$info[4]];
+        $info[0] = $info[0]."-".$existing[$info[0]];
 
+    $info[1] = $info_file[3];
+    $info[2] = $full_path_file;
     $post_content = file(ROOT_DIR.'/'.POST_DIR.'/'.$file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-    $info[5] = $post_content[0];
+    $info[3] = $post_content[0];
     unset($post_content);
 
-    $info[6] = filemtime(ROOT_DIR.'/'.POST_DIR.'/'.$file);
+    $info[4] = filemtime(ROOT_DIR.'/'.POST_DIR.'/'.$file);
 
+    $info[5] = $info_file[0]; //year
+    $info[6] = $info_file[1]; //month
+    $info[7] = $info_file[2]; //day
     return $info;
 }
 
@@ -175,14 +157,30 @@ function create_htaccess($htaccess){
     $content .= "php_flag zlib.output_compression off\n";
     $content .= "</FilesMatch>\n";
 
+    $content .= "# 480 weeks\n";
+    $content .= '<FilesMatch "\.(ico|pdf|flv|jpg|jpeg|png|gif|js|css|swf)$">'."\n";
+    $content .= 'Header set Cache-Control "max-age=290304000, public"'."\n";
+    $content .= "</FilesMatch>\n";
+    $content .= "# 2 HOURS\n";
+    $content .= '<FilesMatch "\.(html|htm)$">'."\n";
+    $content .= 'Header set Cache-Control "max-age=7200, must-revalidate"'."\n";
+    $content .= "</FilesMatch>\n";
+
     $content .= "<IfModule mod_rewrite.c>\n";
     $content .= "RewriteEngine On\n";
+
+    if ( defined("OLD_SLUG") && OLD_SLUG !== "" ){
+        $content .= "RewriteCond %{REQUEST_FILENAME} !-d\n";
+        $content .= "RewriteCond %{REQUEST_FILENAME} !-f\n";
+        $content .= OLD_SLUG."\n";
+    }
 
     $content .= "RewriteRule ^([0-9]{4})/([0-9]{2})/([0-9]{2})/(\w*\b)(/?$) index.php?title=$4 [L,QSA]\n";
     $content .= "RewriteRule ^([0-9]{4})(/([0-9]{2})(/([0-9]{2}))?)?(/page/([0-9]+))?/?\s*$ index.php?year=$1&month=$3&day=$5&page=$7 [L,QSA]\n";
 
     $content .= "RewriteRule ^(archives\b)(/?$) _cache/archive.html [L,QSA]\n";
     $content .= "RewriteRule ^(feed\b)(/?$) /_atom.xml [L,QSA]\n";
+    $content .= "RewriteRule ^(preview\b)(/?$) _inc/preview.php [L,QSA]\n";
 
     $custom_rules = unserialize(REWRITERULES);
     $size = sizeOf($custom_rules);
@@ -197,7 +195,7 @@ function create_htaccess($htaccess){
 
     $content .= "</IfModule>\n";
 
-    if ( defined(USER) && defined(PASSWORD) ){
+    if ( defined("USER") && defined("PASSWORD") ){
         $content .= "AuthUserFile ".ROOT_DIR."/.htpasswd\n";
         $content .= "AuthType Basic\n";
         $content .= "AuthName 'seiteki'\n";
