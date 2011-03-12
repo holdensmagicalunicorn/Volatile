@@ -59,7 +59,7 @@ if ( file_exists($path) ){
     readfile($path);
 }else{
     header("HTTP/1.0 404 Not Found");
-    if ( defined(ERROR_PAGE) && file_exists(ROOT_DIR.ERROR_PAGE) ){
+    if ( defined('ERROR_PAGE') && file_exists(ROOT_DIR.ERROR_PAGE) ){
         readfile(ROOT_DIR.ERROR_PAGE);
     }else{
         echo "<h1>404 Not Found</h1>";
