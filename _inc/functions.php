@@ -58,7 +58,6 @@ function create_data_info($flat=NULL){
             }
         }elseif ( "post" === $flat ){
             for ($i = 0; $i < $size; $i++) {
-                $info = extract_info($files[$i], $existing_file);
                 //Create the data array with all the data ordered by year/month/day
                 $data[] = extract_info($files[$i], $existing_file);
                 unset($info);
