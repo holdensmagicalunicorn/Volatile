@@ -73,7 +73,7 @@ function write_feed(){
         $content .= "<title>$title</title>"."\n";
         $content .= "<link rel='alternate' type='text/html' href='$url_name'/>"."\n";
 
-        $content .= "<id>tag:$base_url,".date("Y-m-d").":/".$flat_posts[$i][0]."</id>\n";
+        $content .= "<id>tag:$base_url,".date("Y-m-d", $flat_posts[$i][4]).":/".$flat_posts[$i][0]."</id>\n";
 
         $content .= "<updated>";
         $date_rfc3339 = date('c', $flat_posts[$i][4]);
