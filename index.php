@@ -1,5 +1,4 @@
 <?php
-
 # Author:     Maxime Hadjinlian
 #             maxime.hadjinlian@gmail.com
 # All rights reserved.
@@ -34,6 +33,11 @@ if ( !file_exists($htaccess) )
     create_htaccess($htaccess);
 
 $path = ROOT_DIR.'/'.CACHE_DIR.'/';
+if ( !file_exists($path) ){
+    header("Location: ".URL."/update.php");
+    exit(1);
+}
+
 if (isSet($_GET['year']) && ( $_GET['year'] !== "" ))
     $path .= $_GET['year']."/";
 
@@ -59,8 +63,8 @@ if ( file_exists($path) ){
     readfile($path);
 }else{
     header("HTTP/1.0 404 Not Found");
-    if ( defined('ERROR_PAGE') && file_exists(ROOT_DIR.ERROR_PAGE) ){
-        readfile(ROOT_DIR.ERROR_PAGE);
+    if ( defined('ERROR_PAGE') && file_exists(ROOT_DIR.'/'.ERROR_PAGE) ){
+        readfile(ROOT_DIR.'/'.ERROR_PAGE);
     }else{
         echo "<h1>404 Not Found</h1>";
         echo "The page that you have requested could not be found.";
