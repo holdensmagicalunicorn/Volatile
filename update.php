@@ -80,7 +80,6 @@ if ( !file_exists(ROOT_DIR."/".CACHE_DIR."/") )
 //This file will re create your archives and generate your cache.
 include ROOT_DIR."/".INC_DIR."/make_archive.php";
 $t1 = microtime(true);
-echo '<!-- Memory Consumption: ' , memory_get_usage( true ) , " -->\n";
 
 echo '<li>Archive creation : ';flush_buffers();
 write_archive();
@@ -106,7 +105,7 @@ echo '<font color="green">DONE</font></li>'."<br />\n";flush_buffers();
 echo 'The blog is updated, you may <a href="'.URL.'">go back</a>.'."<br>\n";
 
 echo '<!-- Total: ' , (microtime(true) - $total) , " -->\n";
-echo '<!-- Memory Consumption: ' , memory_get_usage( true ) , " -->\n";
+echo '<!-- Memory Consumption: ' , memory_get_usage( true ) , "(bytes) -->\n";
 
 echo "<ul></body></html>\n";
 ?>
