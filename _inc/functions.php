@@ -64,7 +64,7 @@ function create_data_info($flat=NULL){
             }
         }
     }else{
-        for ($i = $size; $i > 0; $i--) {
+        for ($i = $size; $i >= 0; $i--) {
             if (empty($files[$i])) continue;
             $info = extract_info($files[$i], $existing_file);
             //Create the data array with all the data ordered by year/month/day
