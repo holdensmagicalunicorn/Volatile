@@ -56,8 +56,9 @@ function write_archive(){
             $size_day = sizeOf($day);
             for ($d=0; $d<$size_day; $d++){
                 $size_day_posts = sizeOf($day[$d]);
-                for ($p=0; $p<$size_day_posts; $p++){
+                for ($p=0; $p<=$size_day_posts; $p++){
                     $post = $archive[$year[$y]][$month[$m]][$day[$d]][$p];
+                    if ( empty($post) ) continue;
                     $filetitle = urlencode($post[0]);
                     $title = $post[3];
                     $filetitle = str_replace('+','_',$filetitle);
