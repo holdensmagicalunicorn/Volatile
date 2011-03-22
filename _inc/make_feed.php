@@ -37,8 +37,10 @@ function write_feed(){
     $last_mtime = 0;
     $size = sizeOf($flat_posts)-1;
     $bound = $size-POST_RSS;
-    for ($i=$size; $i>$bound; $i--)
+    for ($i=$size; $i>$bound; $i--){
+        if ( empty($flat_posts[$i]) ) continue;
         $last_mtime = ($flat_posts[$i][4] > $last_mtime) ? $flat_posts[$i][4] : $last_mtime;
+    }
 
     if ( file_exists($xml_feed) && ( $last_mtime < filemtime($xml_feed) )  ){
         unset($flat_posts);
@@ -63,6 +65,7 @@ function write_feed(){
     $content .= "</author>\n";
 
     for ($i=$size; $i>$bound; $i--){
+        if ( empty($flat_posts[$i]) ) continue;
         $filename = $flat_posts[$i][2];
         $url_name = URL.'/'.$flat_posts[$i][0];
         $title = $flat_posts[$i][3];
