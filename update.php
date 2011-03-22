@@ -54,13 +54,13 @@ echo "<html>\n";
 echo "<head>\n<title>Update seiteki</title>\n</head>\n";
 echo '<body ';
 echo 'style=\'
-        position:absolute; 
-        left: 50%;
         top: 50%;
-        width: 700px; 
-        height: 400px; 
-        margin-top: -350px; /* moitie de la hauteur */ 
-        margin-left: -350px; /* moitie de la largeur */ 
+        left:50%;
+        margin-top : -35px;
+        margin-left: -350px;
+        padding: 0;
+        width: 500px;
+        position: absolute;
         font-family: "century gothic",tahoma,arial,helvetica,sans-serif;
         font-size:21px;
       \'>
