@@ -40,23 +40,22 @@ function write_archive(){
     $content .= "<hr/>\n\n";
 
     $archive = create_data_info(NULL);
-    $year = array_keys($archive);
+    $year = array_reverse(array_keys($archive));
     $size = sizeOf($year);
     for ($y=0; $y<$size; $y++){
         $content .= "<h2 class='archives'><a href='".URL."/$year[$y]'>$year[$y]</a></h2>\n\n";
-        //Reverse order for the month too...
         $archive[$year[$y]] = $archive[$year[$y]];
-        $month = array_keys($archive[$year[$y]]);
+        $month = array_reverse(array_keys($archive[$year[$y]]));
         $size_month = sizeOf($month);
         for ($m=0; $m<$size_month; $m++){
             $date = @date( 'F', @mktime(0, 0, 0, $month[$m]));
             $content .= "<h3 class='archives'><a href='".URL.'/'.$year[$y].'/'.$month[$m]."'>$date</a></h3>\n\n";
             $content .= "<ul class='archive-page'>\n";
-            $day = array_keys($archive[$year[$y]][$month[$m]]);
+            $day = array_reverse(array_keys($archive[$year[$y]][$month[$m]]));
             $size_day = sizeOf($day);
             for ($d=0; $d<$size_day; $d++){
-                $size_day_posts = sizeOf($day[$d]);
-                for ($p=0; $p<=$size_day_posts; $p++){
+                $size_day_posts = sizeOf($archive[$year[$y]][$month[$m]][$day[$d]]);
+                for ($p=0; $p<$size_day_posts; $p++){
                     $post = $archive[$year[$y]][$month[$m]][$day[$d]][$p];
                     if ( empty($post) ) continue;
                     $filetitle = urlencode($post[0]);
