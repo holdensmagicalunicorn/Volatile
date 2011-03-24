@@ -37,7 +37,7 @@ function create_data_info($flat=NULL){
             for ($i = 0; $i < $size; $i++) {
                 $info = extract_info($files[$i], $existing_file);
                 //Create the data array with all the data ordered by year/month/day
-                $data[$info[5]][] = $info;
+                $data[(int)$info[5]][] = $info;
                 unset($info);
             }
         }elseif ( "month" === $flat ){
@@ -45,7 +45,7 @@ function create_data_info($flat=NULL){
                 $info = extract_info($files[$i], $existing_file);
                 $key = $info[5].$info[6];
                 //Create the data array with all the data ordered by year/month/day
-                $data[$key][] = $info;
+                $data[(int)$key][] = $info;
                 unset($info);
             }
         }elseif ( "day" === $flat ){
@@ -53,7 +53,7 @@ function create_data_info($flat=NULL){
                 $info = extract_info($files[$i], $existing_file);
                 $key = $info[5].$info[6].$info[7];
                 //Create the data array with all the data ordered by year/month/day
-                $data[$key][] = $info;
+                $data[(int)$key][] = $info;
                 unset($info);
             }
         }elseif ( "post" === $flat ){
@@ -64,11 +64,11 @@ function create_data_info($flat=NULL){
             }
         }
     }else{
-        for ($i = $size; $i >= 0; $i--) {
+        for ($i = 0; $i < $size; $i++) {
             if (empty($files[$i])) continue;
             $info = extract_info($files[$i], $existing_file);
             //Create the data array with all the data ordered by year/month/day
-            $data[$info[5]][$info[6]][$info[7]][] = $info;
+            $data[(int)$info[5]][(int)$info[6]][(int)$info[7]][] = $info;
             unset($info);
         }
     }
