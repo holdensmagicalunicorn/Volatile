@@ -53,7 +53,7 @@ function write_archive(){
             $content .= "<ul class='archive-page'>\n";
             $day = array_reverse(array_keys($archive[$year[$y]][$month[$m]]));
             $size_day = sizeOf($day);
-            for ($d=0; $d<$size_day; $d++){
+            for ($d=$size_day; $d>=0; $d--){
                 $size_day_posts = sizeOf($archive[$year[$y]][$month[$m]][$day[$d]]);
                 for ($p=0; $p<$size_day_posts; $p++){
                     $post = $archive[$year[$y]][$month[$m]][$day[$d]][$p];
