@@ -53,10 +53,11 @@ function write_archive(){
             $content .= "<ul class='archive-page'>\n";
             $day = array_reverse(array_keys($archive[$year[$y]][$month[$m]]));
             $size_day = sizeOf($day);
-            for ($d=$size_day; $d>=0; $d--){
-                $size_day_posts = sizeOf($archive[$year[$y]][$month[$m]][$day[$d]]);
+            for ($d=0; $d<$size_day; $d++){
+                $day_posts = array_reverse(array_keys($archive[$year[$y]][$month[$m]][$day[$d]]));
+                $size_day_posts = sizeOf($day_posts);
                 for ($p=0; $p<$size_day_posts; $p++){
-                    $post = $archive[$year[$y]][$month[$m]][$day[$d]][$p];
+                    $post = $archive[$year[$y]][$month[$m]][$day[$d]][$day_posts[$p]];
                     if ( empty($post) ) continue;
                     $filetitle = urlencode($post[0]);
                     $title = $post[3];
