@@ -38,7 +38,6 @@ function create_data_info($flat=NULL){
                 $info = extract_info($files[$i], $existing_file);
                 //Create the data array with all the data ordered by year/month/day
                 $data[(int)$info[5]][] = $info;
-                unset($info);
             }
         }elseif ( "month" === $flat ){
             for ($i = 0; $i < $size; $i++) {
@@ -46,7 +45,6 @@ function create_data_info($flat=NULL){
                 $key = $info[5].$info[6];
                 //Create the data array with all the data ordered by year/month/day
                 $data[(int)$key][] = $info;
-                unset($info);
             }
         }elseif ( "day" === $flat ){
             for ($i = 0; $i < $size; $i++) {
@@ -54,13 +52,11 @@ function create_data_info($flat=NULL){
                 $key = $info[5].$info[6].$info[7];
                 //Create the data array with all the data ordered by year/month/day
                 $data[(int)$key][] = $info;
-                unset($info);
             }
         }elseif ( "post" === $flat ){
             for ($i = 0; $i < $size; $i++) {
                 //Create the data array with all the data ordered by year/month/day
                 $data[] = extract_info($files[$i], $existing_file);
-                unset($info);
             }
         }
     }else{
@@ -69,7 +65,6 @@ function create_data_info($flat=NULL){
             $info = extract_info($files[$i], $existing_file);
             //Create the data array with all the data ordered by year/month/day
             $data[(int)$info[5]][(int)$info[6]][(int)$info[7]][] = $info;
-            unset($info);
         }
     }
     unset($existing_file);
