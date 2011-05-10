@@ -1,0 +1,5 @@
+.htaccess
+.htpasswd
+_cache/*
+_posts/*
+_atom.xml
