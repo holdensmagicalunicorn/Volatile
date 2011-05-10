@@ -32,80 +32,54 @@ PHP is only here to generate stuff, not display anything.
 */
 require_once( ROOT_DIR.'/'.INC_DIR.'/functions.php');
 
+$GLOBALS["header"]  = shell_exec('php -q '.ROOT_DIR.'/'.LAYOUT_DIR.'/header.php');
+$GLOBALS["sidebar"] = shell_exec('php -q '.ROOT_DIR.'/'.LAYOUT_DIR.'/sidebar.php');
+$GLOBALS["footer"]  = shell_exec('php -q '.ROOT_DIR.'/'.LAYOUT_DIR.'/footer.php');
+
 function write_cache(){
 
     date_default_timezone_set(TIMEZONE);
-    $header = shell_exec('php -q '.ROOT_DIR.'/'.LAYOUT_DIR.'/header.php');
-    $sidebar = shell_exec('php -q '.ROOT_DIR.'/'.LAYOUT_DIR.'/sidebar.php');
-    $footer = shell_exec('php -q '.ROOT_DIR.'/'.LAYOUT_DIR.'/footer.php');
 
     // Create cache for each year   
     $flat_year = create_data_info("year");
-    $year = array_keys($flat_year);
-    $size = sizeOf($year);
-    for ($i=0; $i<$size; $i++){
-        create_pages($flat_year[$year[$i]], 
-                     sizeOf($flat_year[$year[$i]]), 
-                     $year[$i],
-                     $header, $sidebar, $footer);
-    }
+    foreach ($flat_year as $year => $data)
+        create_pages($data, $year);
     unset($flat_year);
 
     // Create cache for each year/month (the key of the array is yearmonth so we can split it.)
     $flat_month = create_data_info("month");
-    $month_per_year = array_keys($flat_month);
-    $size = sizeOf($month_per_year);
-    for ($i=0; $i<$size; $i++){
-        $month = substr($month_per_year[$i], -2);
-        $year = substr($month_per_year[$i], 0, 4);
-        create_pages($flat_month[$month_per_year[$i]], 
-                     sizeOf($flat_month[$month_per_year[$i]]), 
-                     $year.'/'.$month,
-                     $header, $sidebar, $footer);
+    foreach ($flat_month as $yearmonth => $data){
+        $month = substr($yearmonth, -2);
+        $year = substr($yearmonth, 0, 4);
+        create_pages($data, $year.'/'.$month);
     }
     unset($flat_month);
 
     // Create the cache for each day.
     $flat_day = create_data_info("day");
-    $day_per_month = array_keys($flat_day);
-    $size = sizeOf($day_per_month);
-    for ($i=0; $i<$size; $i++){
-        $day = substr($day_per_month[$i], -2);
-        $month = substr($day_per_month[$i], 4, 2);
-        $year = substr($day_per_month[$i], 0, 4);
-        create_pages($flat_day[$day_per_month[$i]], 
-                     sizeOf($flat_day[$day_per_month[$i]]), 
-                     $year.'/'.$month.'/'.$day,
-                     $header, $sidebar, $footer);
+    foreach ($flat_day as $yearmonthday => $data){
+        $day = substr($yearmonthday, -2);
+        $month = substr($yearmonthday, 4, 2);
+        $year = substr($yearmonthday, 0, 4);
+        create_pages($data, $year.'/'.$month.'/'.$day);
     }
     unset($flat_day);
 
     // Create cache per post
     $flat_post = create_data_info("post");
     // Create the index page that will create the "main" pages of the blog
-    create_pages($flat_post, 
-                 sizeOf($flat_post), 
-                 "",
-                 $header, $sidebar, $footer);
-
-    $size = sizeOf($flat_post);
-    for ($i=0; $i<$size; $i++) {
-        $title = urlencode($flat_post[$i][0]);
+    create_pages($flat_post, "");
+    foreach($flat_post as $post){
+        $title = urlencode($post[0]);
         $title = strtolower(str_replace('+','_',$title));
         $filepath = ROOT_DIR.'/'.CACHE_DIR.'/'.$title."_0.html";
-        create_page_content($filepath, 
-                            $flat_post[$i], 
-                            $header, 
-                            $sidebar, 
-                            $footer,
-                            true
-                           );
+        create_page_content($filepath, $post, true );
     }
     unset($flat_post);
-
 }
 
-function create_pages($data_post, $nb_post, $path, $header, $sidebar, $footer){
+function create_pages($data_post, $path){
+    $nb_post = sizeOf($data_post);
     $data_post = array_reverse($data_post, true);
 
     //Create the HTML file for the day.
@@ -117,18 +91,18 @@ function create_pages($data_post, $nb_post, $path, $header, $sidebar, $footer){
             $to_include = $data_post;
         }
         $filepath = ROOT_DIR.'/'.CACHE_DIR.'/'."$path/index_$i.html";
-        $footer_pag = $footer;
+        $footer_pag = $GLOBALS["footer"];
         if (WITH_PAGINATOR)
-            $footer_pag = create_paginator($i+1, $nb_page, $path).$footer;
-        create_page_content($filepath, $to_include, $header, $sidebar, $footer_pag);
+            $footer_pag = create_paginator($i+1, $nb_page, $path).$GLOBALS["footer"];
+        create_page_content($filepath, $to_include, $footer_pag);
     }
 }
 
 function create_page_content($filepath, $post_file, 
-                             $header, $sidebar, $footer, 
+                             $footer_pagin, 
                              $is_page=false){
 
-    $content = "$header\n\n";
+    $content = $GLOBALS["header"]."\n\n";
     if ( isSet($post_file[0]) && @is_array($post_file[0]) ) {
         $size = sizeOf($post_file);
 
@@ -151,12 +125,12 @@ function create_page_content($filepath, $post_file,
                 return NULL;
         $content .= post_to_html($post_file, True, False);
         if ( $is_page && defined('DISQUS_SHORTNAME') && ( DISQUS_SHORTNAME !== '' ) )
-            add_disqus(&$content, $post_file[0]);
+            $content .= add_disqus($content, $post_file[0]);
     }
     unset($post_file);
 
-    $content .= "$sidebar\n\n";
-    $content .= "$footer\n\n";
+    $content .= $GLOBALS["sidebar"]."\n\n";
+    $content .= "$footer_pagin\n\n";
 
     if (HTML_INLINE)
         $content =  str_replace(array("\r\n","\n","\r")," ",$content);

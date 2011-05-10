@@ -28,41 +28,44 @@
 function create_data_info($flat=NULL){
 
     $data = array();
-    $files = glob(ROOT_DIR.'/'.POST_DIR.'/*.md');
-    $size = sizeOf($files);
+    $files = new DirectoryIterator(ROOT_DIR.'/'.POST_DIR.'/');
     $existing_title = array();
 
     if (isSet($flat)){
         if ( "year" === $flat ){
-            for ($i = 0; $i < $size; $i++) {
-                $info = extract_info($files[$i], $existing_file);
+            foreach ( $files as $file) {
+                if ($file->isDot ()) continue;
+                $info = extract_info($file, $existing_file);
                 //Create the data array with all the data ordered by year/month/day
                 $data[(int)$info[5]][] = $info;
             }
         }elseif ( "month" === $flat ){
-            for ($i = 0; $i < $size; $i++) {
-                $info = extract_info($files[$i], $existing_file);
+            foreach ( $files as $file) {
+                if ($file->isDot ()) continue;
+                $info = extract_info($file, $existing_file);
                 $key = $info[5].$info[6];
                 //Create the data array with all the data ordered by year/month/day
                 $data[(int)$key][] = $info;
             }
         }elseif ( "day" === $flat ){
-            for ($i = 0; $i < $size; $i++) {
-                $info = extract_info($files[$i], $existing_file);
+            foreach ( $files as $file) {
+                if ($file->isDot ()) continue;
+                $info = extract_info($file, $existing_file);
                 $key = $info[5].$info[6].$info[7];
                 //Create the data array with all the data ordered by year/month/day
                 $data[(int)$key][] = $info;
             }
         }elseif ( "post" === $flat ){
-            for ($i = 0; $i < $size; $i++) {
+            foreach ( $files as $file) {
+                if ($file->isDot ()) continue;
                 //Create the data array with all the data ordered by year/month/day
-                $data[] = extract_info($files[$i], $existing_file);
+                $data[] = extract_info($file, $existing_file);
             }
         }
     }else{
-        for ($i = 0; $i < $size; $i++) {
-            if (empty($files[$i])) continue;
-            $info = extract_info($files[$i], $existing_file);
+        foreach ( $files as $file) {
+            if ($file->isDot ()) continue;
+            $info = extract_info($file, $existing_file);
             //Create the data array with all the data ordered by year/month/day
             $data[(int)$info[5]][(int)$info[6]][(int)$info[7]][] = $info;
         }
@@ -74,39 +77,34 @@ function create_data_info($flat=NULL){
 }
 
 function extract_info($file, &$existing){
-    $full_path_file = $file;
-    $file = basename($file);
-    $info_file = explode("-", $file, 4);
 
-    $filetitle = explode(".", $info_file[3]);
-    $info[0] = $filetitle[0];
+    $info = array();
 
+    $info[] = substr($file->getBaseName('.md'), 11);
     if (!isSet($existing[$info[0]]))
         $existing[$info[0]] = -1;
     $existing[$info[0]] += 1;
     if ($existing[$info[0]] > 0)
         //We have already found a post with this title
-        //the creation of the cache is based on info[4] data for the filename
-        //so we need to tune it
         $info[0] = $info[0]."-".$existing[$info[0]];
 
-    $info[1] = $info_file[3];
-    $info[2] = $full_path_file;
-    $post_content = file(ROOT_DIR.'/'.POST_DIR.'/'.$file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-    $info[3] = $post_content[0];
+    $info[] = substr($file->getFileName(), 11); 
+    $info[] = $file->getPathName();
+    $post_content = file_get_contents($info[2], FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    $info[] = strstr($post_content, "\n", true);
     unset($post_content);
+    $info[] = $file->getMTime();
 
-    $info[4] = filemtime(ROOT_DIR.'/'.POST_DIR.'/'.$file);
+    $date_file = explode('-', substr($file->getFileName(), 0, 10) );
+    $info[] = $date_file[0]; //year
+    $info[] = $date_file[1]; //month
+    $info[] = $date_file[2]; //day
 
-    $info[5] = $info_file[0]; //year
-    $info[6] = $info_file[1]; //month
-    $info[7] = $info_file[2]; //day
     return $info;
 }
 
 function post_to_html($post, $with_title=True, $with_more=True){
 
-    include_once ROOT_DIR.'/'.INC_DIR."/php-markdown/markdown.php";
     $filename = $post[2];
     $title = $post[3];
     $url_name = URL.'/'.str_replace('+','_',urlencode($post[0]));
@@ -131,13 +129,19 @@ function post_to_html($post, $with_title=True, $with_more=True){
         $more_static = "<!--more-->";
         // Cut the article at the line
         $where_to_cut = strpos($post_content, $more_static);
-        if ( !$where_to_cut == false ){
+        if ( !$where_to_cut === false ){
             $post_content = substr($post_content, 0, $where_to_cut);
             // And add link to full page
             $post_content .= "\n</br><a href='$url_name'>Read the rest of this entry &raquo;</a></br>\n";
         }
     }
-    $content .= Markdown($post_content)."\n\n";
+    if ( defined('USE_UPSKIRT') && ( USE_UPSKIRT === true ) ) {
+        $results = shell_exec(ROOT_DIR.'/'.INC_DIR."/upskirt/upskirt $filename");
+        $content .= strstr($results, "\n")."\n\n";
+    }else{
+        include_once ROOT_DIR.'/'.INC_DIR."/php-markdown/markdown.php";
+        $content .= Markdown($post_content)."\n\n";
+    }
     unset($post_content);
     $content .= "</div>\n</div>\n";
 
@@ -211,6 +215,7 @@ function create_htaccess($htaccess){
 }
 
 function create_paginator($currentpage, $nb_items, $path){
+
     require_once ROOT_DIR.'/'.INC_DIR.'/paginator-digg/pagination.php';
 
     $p = new pagination;
@@ -226,11 +231,9 @@ function create_paginator($currentpage, $nb_items, $path){
     if (!$p->calculate)
         if($p->calculate())
             return "<div class=\"$p->className\">$p->pagination</div>";
-
 }
 
-function add_disqus(&$content, $title){
-
+function add_disqus($content, $title){
     $title = str_replace('+','_',urlencode($title));
     $content .= '<div id="disqus_thread"></div>'."\n";
     $content .= '<script type="text/javascript">'."\n";
@@ -244,6 +247,7 @@ function add_disqus(&$content, $title){
     $content .= " })();\n";
     $content .= "</script>\n";
     $content .= "<noscript>Please enable JavaScript to view the <a href='http://disqus.com/?ref_noscript'>comments powered by Disqus.</a></noscript>";
+    return $content;
 }
 
 ?>
