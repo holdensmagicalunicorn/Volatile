@@ -39,9 +39,15 @@ function search_posts($query){
     for ($s=0; $s<$size; $s++){
         if ( "" === $output[$s] )
             continue;
-        $emp = array();
-        $info = extract_info($output[$s], $emp);
-        $result_array[] = array("url" => URL."/".urlencode($info[0]), "title" => $info[3]);
+            
+        $filename = basename($output[$s], ".md");
+        $filename = explode("-", $filename, 4);
+         
+        $post_content = file_get_contents($output[$s], FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+        $title = strstr($post_content, "\n", true);
+        unset($post_content);
+
+        $result_array[] = array("url" => URL."/".urlencode($filename[3]), "title" => $title);
     }
 
     return $result_array;
