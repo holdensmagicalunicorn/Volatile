@@ -73,7 +73,7 @@ function write_cache(){
         $title = urlencode($post[0]);
         $title = strtolower(str_replace('+','_',$title));
         $filepath = ROOT_DIR.'/'.CACHE_DIR.'/'.$title."_0.html";
-        create_page_content($filepath, $post, true );
+        create_page_content($filepath, $post, $GLOBALS["footer"], true );
     }
     unset($flat_post);
 }
