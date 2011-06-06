@@ -30,11 +30,12 @@ require_once ROOT_DIR."/".INC_DIR."/functions.php";
 
 include_once ROOT_DIR.'/'.LAYOUT_DIR.'/header.php';
 
-$files = glob(ROOT_DIR.'/'.POST_DIR.'/*.md');
-$size = sizeOf($files);
+$files = new DirectoryIterator(ROOT_DIR.'/'.POST_DIR.'/');
+$size = iterator_count($files);
+$files->seek($size-1);
 
 $emp = array();
-$info = extract_info($files[$size-1], $emp);
+$info = extract_info($files, $emp);
 echo post_to_html($info, True, false);
 
 include_once ROOT_DIR.'/'.LAYOUT_DIR.'/sidebar.php';
