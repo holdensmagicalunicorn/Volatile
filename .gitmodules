@@ -1,3 +1,6 @@
 [submodule "_inc/upskirt"]
 	path = _inc/upskirt
 	url = git://github.com/tanoku/upskirt.git
+[submodule "_inc/php-markdown"]
+	path = _inc/php-markdown
+	url = git://github.com/wolfie/php-markdown.git
