@@ -125,22 +125,22 @@ function post_to_html($post, $with_title=True, $with_more=True){
     }
     $content .= "<div class='itemtext'>\n";
     $post_content = file_get_contents($filename, FILE_USE_INCLUDE_PATH, NULL, $offset);
-    if ( $with_more ) {
-        $more_static = "<!--more-->";
-        // Cut the article at the line
-        $where_to_cut = strpos($post_content, $more_static);
-        if ( !$where_to_cut === false ){
-            $post_content = substr($post_content, 0, $where_to_cut);
-            // And add link to full page
-            $post_content .= "\n</br><a href='$url_name'>Read the rest of this entry &raquo;</a></br>\n";
-        }
-    }
     if ( defined('USE_UPSKIRT') && ( USE_UPSKIRT === true ) ) {
         $results = shell_exec(ROOT_DIR.'/'.INC_DIR."/upskirt/upskirt $filename");
         $content .= strstr($results, "\n")."\n\n";
     }else{
         include_once ROOT_DIR.'/'.INC_DIR."/php-markdown/markdown.php";
         $content .= Markdown($post_content)."\n\n";
+    }
+    if ( $with_more ) {
+        $more_static = "<!--more-->";
+        // Cut the article at the line
+        $where_to_cut = strpos($content, $more_static);
+        if ( !$where_to_cut === false ){
+            $content = substr($content, 0, $where_to_cut);
+            // And add link to full page
+            $content .= "\n</br><a href='$url_name'>Read the rest of this entry &raquo;</a></br>\n";
+        }
     }
     unset($post_content);
     $content .= "</div>\n</div>\n";
