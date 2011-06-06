@@ -1,6 +1,4 @@
 User-agent: *
-Disallow: /public-img
-Disallow: /repository
 Disallow: /_inc
 Disallow: /_layouts
 Disallow: /_cache
@@ -23,6 +21,4 @@ Allow: /
 
 User-agent: ia_archiver-web.archive.org
 Allow: /
-
-Sitemap: http://geekboy.fr/sitemap.xml
 
