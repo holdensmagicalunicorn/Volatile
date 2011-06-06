@@ -196,7 +196,7 @@ function create_htaccess($htaccess){
     if ( defined("USER") && defined("PASSWORD") ){
         $content .= "AuthUserFile ".ROOT_DIR."/.htpasswd\n";
         $content .= "AuthType Basic\n";
-        $content .= "AuthName 'seiteki'\n";
+        $content .= "AuthName 'Volatile'\n";
         $content .= "<Files 'update.php'>\n";
         $content .= "Require valid-user\n";
         $content .= "</Files>\n";

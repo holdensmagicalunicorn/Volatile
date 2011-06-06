@@ -5,7 +5,7 @@
 </div>
 <hr />
 
-<div id="footer"><small>Designed by <a href="http://paulstamatiou.com" title="Paul Stamatiou">Paul Stamatiou</a>. Optimized by <a href="http://www.pronetadvertising.com/about" title="Neil Patel">Neil Patel</a>. Powered by <a href="http://github.com/maximeh/seiteki/" title="seiteki">seiteki</a></small></div>
+<div id="footer"><small>Designed by <a href="http://paulstamatiou.com" title="Paul Stamatiou">Paul Stamatiou</a>. Optimized by <a href="http://www.pronetadvertising.com/about" title="Neil Patel">Neil Patel</a>. Powered by <a href="http://github.com/maximeh/volatile/" title="volatile">Volatile</a></small></div>
 <script src="<?php echo URL;?>/mint/?js" type="text/javascript"></script>
 
 <script type="text/javascript" src="http://www.google.com/jsapi"></script>

@@ -5,10 +5,10 @@
 
 <head profile="http://gmpg.org/xfn/11"> 
 
-    <title>Seiteki</title>
+    <title>Volatile</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta http-equiv="Pirate" content="Yarrr!! Stop watchin' me tag bloody Ninja !" />
-    <link rel='index' title='seiteki' href='http://github.com/maximeh/seiteki/' />
+    <link rel='index' title='volatile' href='http://github.com/maximeh/volatile/' />
     <meta name="generator" content="seiteiki" />
 
     <meta name="googlebot" content="noindex,follow,noodp" />
@@ -26,7 +26,7 @@
             <a class="headerimg" href="<?php echo URL.'/'; ?>"></a>
 
             <p id="about">  
-            Hey! Bienvenue sur Seiteki !
+            Hey! Bienvenue sur Volatile !
             </p>
 
         </div>

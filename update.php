@@ -51,7 +51,7 @@ function rrmdir($path){
 }
 
 echo "<html>\n";
-echo "<head>\n<title>Update seiteki</title>\n</head>\n";
+echo "<head>\n<title>Update Volatile</title>\n</head>\n";
 echo '<body ';
 echo 'style=\'
         top: 50%;
