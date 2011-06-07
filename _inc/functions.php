@@ -223,9 +223,9 @@ function create_paginator($currentpage, $nb_items, $path){
     $p->currentPage($currentpage);
     $p->limit(1);
     $p->urlFriendly();
-    $p->target(URL."/$path/page/%/");
+    $p->target(URL."/$path/page/%");
     if ( "" === $path )
-        $p->target(URL."/page/%/");
+        $p->target(URL."/page/%");
     $p->adjacents(1);
 
     if (!$p->calculate)
