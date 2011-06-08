@@ -233,8 +233,9 @@ function create_paginator($currentpage, $nb_items, $path){
             return "<div class=\"$p->className\">$p->pagination</div>";
 }
 
-function add_disqus($content, $title){
-    $title = str_replace('+','_',urlencode($title));
+function add_disqus($title){
+    $content  = "";
+    $title    = str_replace('+','_',urlencode($title));
     $content .= '<div id="disqus_thread"></div>'."\n";
     $content .= '<script type="text/javascript">'."\n";
     $content .= "var disqus_shortname = '".DISQUS_SHORTNAME."';\n";

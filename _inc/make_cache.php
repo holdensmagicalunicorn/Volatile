@@ -125,7 +125,7 @@ function create_page_content($filepath, $post_file,
                 return NULL;
         $content .= post_to_html($post_file, True, False);
         if ( $is_page && defined('DISQUS_SHORTNAME') && ( DISQUS_SHORTNAME !== '' ) )
-            $content .= add_disqus($content, $post_file[0]);
+            $content .= add_disqus($post_file[0]);
     }
     unset($post_file);
 
