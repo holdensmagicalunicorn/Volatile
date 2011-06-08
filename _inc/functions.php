@@ -115,8 +115,6 @@ function post_to_html($post, $with_title=True, $with_more=True){
     $date[1] = @date( 'F', @mktime(0, 0, 0, $date[1]));
     $date = $date[2]." ".$date[1]." ".$date[0];
 
-    $offset = (strlen($title)*2)+1; // we don't want to read the title.
-
     $content = "<div id='post' class='item entry'>\n";
     if ( $with_title ){
         $content .= "<div class='itemhead'>\n";
@@ -124,13 +122,16 @@ function post_to_html($post, $with_title=True, $with_more=True){
         $content .= "<p class='metadata'>$date</p>\n</div>\n";
     }
     $content .= "<div class='itemtext'>\n";
-    $post_content = file_get_contents($filename, FILE_USE_INCLUDE_PATH, NULL, $offset);
+
     if ( defined('USE_UPSKIRT') && ( USE_UPSKIRT === true ) ) {
         $results = shell_exec(ROOT_DIR.'/'.INC_DIR."/upskirt/upskirt $filename");
         $content .= strstr($results, "\n")."\n\n";
     }else{
         include_once ROOT_DIR.'/'.INC_DIR."/php-markdown/markdown.php";
+        $offset = (strlen($title)*2)+1; // we don't want to read the title.
+        $post_content = file_get_contents($filename, FILE_USE_INCLUDE_PATH, NULL, $offset);
         $content .= Markdown($post_content)."\n\n";
+        unset($post_content);
     }
     if ( $with_more ) {
         $more_static = "<!--more-->";
@@ -142,7 +143,6 @@ function post_to_html($post, $with_title=True, $with_more=True){
             $content .= "\n</br><a href='$url_name'>Read the rest of this entry &raquo;</a></br>\n";
         }
     }
-    unset($post_content);
     $content .= "</div>\n</div>\n";
 
     return $content;
