@@ -22,40 +22,37 @@ It's for people who :
 
 Organization
 ------------
-
 Here is the main tree of Volatile :
 
-.
-├── AUTHORS
-├── config.php
-├── COPYING
-├── _inc
-│   ├── from_wp
-│   ├── functions.php
-│   ├── magpie
-│   ├── make_archive.php
-│   ├── make_cache.php
-│   ├── make_feed.php
-│   ├── paginator-digg
-│   ├── php-markdown
-│   ├── preview.php
-│   ├── search.php
-│   └── upskirt
-├── index.php
-├── _layouts
-│   ├── _css
-│   ├── footer.php
-│   ├── header.php
-│   ├── _images
-│   ├── _plugins
-│   │   └── live-search-popup
-│   └── sidebar.php
-├── _posts
-│   └── 2011-09-03-first-post.md
-├── README.md
-├── robots.txt
-└── update.php
-
+    ├── AUTHORS
+    ├── config.php
+    ├── COPYING
+    ├── _inc
+    │   ├── from_wp
+    │   ├── functions.php
+    │   ├── magpie
+    │   ├── make_archive.php
+    │   ├── make_cache.php
+    │   ├── make_feed.php
+    │   ├── paginator-digg
+    │   ├── php-markdown
+    │   ├── preview.php
+    │   ├── search.php
+    │   └── upskirt
+    ├── index.php
+    ├── _layouts
+    │   ├── _css
+    │   ├── footer.php
+    │   ├── header.php
+    │   ├── _images
+    │   ├── _plugins
+    │   │   └── live-search-popup
+    │   └── sidebar.php
+    ├── _posts
+    │   └── 2011-09-03-first-post.md
+    ├── README.md
+    ├── robots.txt
+    └── update.php
 
 Requirements
 ------------
