@@ -70,13 +70,14 @@ function write_feed(){
         $url_name = URL.'/'.$flat_posts[$i][0];
         $title = $flat_posts[$i][3];
         $date = date("d F Y H:i:s", $flat_posts[$i][4]);
+        $tag_date = $flat_posts[$i][5].'-'.$flat_posts[$i][6].'-'.$flat_posts[$i][7];
 
         $content .= "<entry>"."\n";
 
         $content .= "<title>$title</title>"."\n";
         $content .= "<link rel='alternate' type='text/html' href='$url_name'/>"."\n";
 
-        $content .= "<id>tag:$base_url,".date("Y-m-d", $flat_posts[$i][4]).":/".$flat_posts[$i][0]."</id>\n";
+        $content .= "<id>tag:$base_url,".$tag_date.":/".$flat_posts[$i][0]."</id>\n";
 
         $content .= "<updated>";
         $date_rfc3339 = date('c', $flat_posts[$i][4]);
