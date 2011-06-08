@@ -22,9 +22,8 @@ It's for people who :
 
 Organization
 ------------
-
 Here is the main tree of Volatile :
-    .
+
     ├── AUTHORS
     ├── config.php
     ├── COPYING
