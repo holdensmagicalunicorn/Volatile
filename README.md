@@ -58,7 +58,7 @@ Requirements
 ------------
     - Apache 2.0 or superior
     - PHP 5.2 or superior
-    - grep (Volatile use it for searching throught your posts)
+    - grep (Volatile use it for searching through  your posts)
     - That's it.
 If you can't have this with your hosting company : change as quickly as 
 possible because they suck.
