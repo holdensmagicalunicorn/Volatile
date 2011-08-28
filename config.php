@@ -38,11 +38,11 @@ define('URL', "http://myblog.com");
     //Extra
     define('HTML_INLINE', false); // Do you want your HTML inline or not ? It may speed loading time a bit.
 
-    // To use Upskirt, you must be allowed to compile on your hosting and to 
+    // To use Sundown, you must be allowed to compile on your hosting and to 
     // execute binary.
-    // Upskirt is located in _inc/upskirt, invoke make and that's all for you !
-    // Check this https://github.com/tanoku/upskirt if you want more information.
-    define('USE_UPSKIRT', true);
+    // Sundown is located in _inc/sundown, invoke make and that's all for you !
+    // Check this https://github.com/tanoku/sundown if you want more information.
+    define('USE_SUNDOWN', true);
     
     define('WITH_PAGINATOR', false); // This will generate a paginator a-la digg for you.
     define('ERROR_PAGE', "/path/to/error/404.html"); // Custom 404 error page

@@ -38,7 +38,7 @@ Here is the main tree of Volatile :
     │   ├── php-markdown
     │   ├── preview.php
     │   ├── search.php
-    │   └── upskirt
+    │   └── sundown
     ├── index.php
     ├── _layouts
     │   ├── _css
@@ -89,7 +89,7 @@ How to use
     $ cd blog
     $ git submodule init
     $ git submodule update
-    $ cd _inc/upskirt && make
+    $ cd _inc/sundown && make
 
 Then READ the config.php and tune the variable as you want them.
 
