@@ -25,23 +25,43 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+class SortableDirectoryIterator implements IteratorAggregate{
+    private $_storage;
+
+    public function __construct($path){
+        $this->_storage = new ArrayObject();
+
+        $files = new DirectoryIterator($path);
+        foreach ($files as $file) {
+            if ($file->isDot()) continue;
+            $this->_storage->offsetSet($file->getFilename(), $file->getFileInfo());
+        }
+        $this->_storage->uksort(
+            function ($a, $b) {
+                return strcmp($a, $b);
+            }
+        );
+    }
+
+    public function getIterator(){
+        return $this->_storage->getIterator();
+    }
+}
+
 function create_data_info($flat=NULL){
 
     $data = array();
-    $files = new DirectoryIterator(ROOT_DIR.'/'.POST_DIR.'/');
+    $files = new SortableDirectoryIterator(ROOT_DIR.'/'.POST_DIR.'/');
     $existing_title = array();
-
     if (isSet($flat)){
         if ( "year" === $flat ){
             foreach ( $files as $file) {
-                if ($file->isDot ()) continue;
                 $info = extract_info($file, $existing_file);
                 //Create the data array with all the data ordered by year/month/day
                 $data[(int)$info[5]][] = $info;
             }
         }elseif ( "month" === $flat ){
             foreach ( $files as $file) {
-                if ($file->isDot ()) continue;
                 $info = extract_info($file, $existing_file);
                 $key = $info[5].$info[6];
                 //Create the data array with all the data ordered by year/month/day
@@ -49,7 +69,6 @@ function create_data_info($flat=NULL){
             }
         }elseif ( "day" === $flat ){
             foreach ( $files as $file) {
-                if ($file->isDot ()) continue;
                 $info = extract_info($file, $existing_file);
                 $key = $info[5].$info[6].$info[7];
                 //Create the data array with all the data ordered by year/month/day
@@ -57,14 +76,12 @@ function create_data_info($flat=NULL){
             }
         }elseif ( "post" === $flat ){
             foreach ( $files as $file) {
-                if ($file->isDot ()) continue;
                 //Create the data array with all the data ordered by year/month/day
                 $data[] = extract_info($file, $existing_file);
             }
         }
     }else{
         foreach ( $files as $file) {
-            if ($file->isDot ()) continue;
             $info = extract_info($file, $existing_file);
             //Create the data array with all the data ordered by year/month/day
             $data[(int)$info[5]][(int)$info[6]][(int)$info[7]][] = $info;
@@ -99,7 +116,6 @@ function extract_info($file, &$existing){
     $info[] = $date_file[0]; //year
     $info[] = $date_file[1]; //month
     $info[] = $date_file[2]; //day
-
     return $info;
 }
 
@@ -123,8 +139,8 @@ function post_to_html($post, $with_title=True, $with_more=True){
     }
     $content .= "<div class='itemtext'>\n";
 
-    if ( defined('USE_UPSKIRT') && ( USE_UPSKIRT === true ) ) {
-        $results = shell_exec(ROOT_DIR.'/'.INC_DIR."/upskirt/upskirt $filename");
+    if ( defined('USE_SUNDOWN') && ( USE_SUNDOWN === true ) ) {
+        $results = shell_exec(ROOT_DIR.'/'.INC_DIR."/sundown/sundown $filename");
         $content .= strstr($results, "\n")."\n\n";
     }else{
         include_once ROOT_DIR.'/'.INC_DIR."/php-markdown/markdown.php";
